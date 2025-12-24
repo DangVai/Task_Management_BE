@@ -8,6 +8,30 @@ import { plainToInstance } from 'class-transformer';
 const taskService = new TaskService();
 
 export class TaskController {
+    getAll = async (req: Request, res: Response) => {
+        try {
+            const userId = req.user?.id;
+            if (!userId) return res.status(401).json({ message: 'Unauthorized' });
+
+            const tasks = await taskService.getAll(userId);
+            res.json(tasks);
+        } catch (error: any) {
+            res.status(500).json({ message: error.message });
+        }
+    };
+
+    getById = async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+            const userId = req.user?.id;
+            if (!userId) return res.status(401).json({ message: 'Unauthorized' });
+
+            const task = await taskService.getById(id, userId);
+            res.json(task);
+        } catch (error: any) {
+            res.status(403).json({ message: 'Task không tồn tại hoặc bạn không có quyền truy cập' });
+        }
+    };
     create = async (req: Request, res: Response) => {
         try {
             const userId = req.user?.id;

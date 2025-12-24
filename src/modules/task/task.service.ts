@@ -1,6 +1,7 @@
 import { prisma } from '../../config/prisma.js';
 import { CreateTaskDto } from './dto/request/create-task.dto.js';
 import { UpdateTaskStatusDto } from './dto/request/update-task-status.dto.js';
+import { UpdateTaskDto } from './dto/request/update-task.dto.js';
 
 export class TaskService {
     async create(createTaskDto: CreateTaskDto, userId: string) {
@@ -34,5 +35,65 @@ export class TaskService {
             },
             include: { user: { select: { id: true, username: true } } }
         });
+    }
+
+    async update(id: string, updateTaskDto: UpdateTaskDto, userId: string) {
+        const task = await prisma.task.findUnique({ where: { id } });
+
+        if (!task) {
+            throw new Error('Task not found');
+        }
+
+        if (task.userId !== userId) {
+            throw new Error('Unauthorized');
+        }
+
+        return await prisma.task.update({
+            where: { id },
+            data: {
+                ...(updateTaskDto.content !== undefined && { content: updateTaskDto.content }),
+                ...(updateTaskDto.status !== undefined && { status: updateTaskDto.status }),
+            },
+            include: { user: { select: { id: true, username: true } } }
+        });
+    }
+
+    async delete(id: string, userId: string) {
+        const task = await prisma.task.findUnique({ where: { id } });
+
+        if (!task) {
+            throw new Error('Task not found');
+        }
+
+        if (task.userId !== userId) {
+            throw new Error('Unauthorized');
+        }
+
+        return await prisma.task.delete({ where: { id } });
+    }
+
+    async getAll(userId: string) {
+        return await prisma.task.findMany({
+            where: { userId },
+            include: { user: { select: { id: true, username: true } } },
+            orderBy: { createdAt: 'desc' }
+        });
+    }
+
+    async getById(id: string, userId: string) {
+        const task = await prisma.task.findUnique({
+            where: { id },
+            include: { user: { select: { id: true, username: true } } }
+        });
+
+        if (!task) {
+            throw new Error('Task not found');
+        }
+
+        if (task.userId !== userId) {
+            throw new Error('Unauthorized');
+        }
+
+        return task;
     }
 }
