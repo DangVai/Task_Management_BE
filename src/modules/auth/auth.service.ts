@@ -33,7 +33,7 @@ export class AuthService {
         const token = generateToken({
             userId: user.id,
             email: user.email,
-            role: user.role,
+            role: user.role ||'MANAGER',
         });
 
         return { user, token };
