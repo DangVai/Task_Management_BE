@@ -18,8 +18,6 @@ services:
       timeout: 5s
       retries: 5
 
-<<<<<<< HEAD
-=======
   app:
     build:
       context: .
@@ -40,6 +38,5 @@ services:
       - /app/node_modules
     restart: unless-stopped
 
->>>>>>> 2058b16264571558f9262dcda0c627b5e99995cf
 volumes:
   postgres_data:
