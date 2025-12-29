@@ -1,5 +1,8 @@
-import jwt, { SignOptions } from "jsonwebtoken";
+
 import { Role } from "@prisma/client";
+
+import * as jwt from "jsonwebtoken";
+import { SignOptions } from "jsonwebtoken";
 
 export interface JwtPayload {
   userId: string;
