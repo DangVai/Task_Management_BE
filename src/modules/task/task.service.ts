@@ -2,7 +2,7 @@ import { prisma } from '../../config/prisma.js';
 import { CreateTaskDto } from './dto/request/create-task.dto.js';
 import { UpdateTaskStatusDto } from './dto/request/update-task-status.dto.js';
 import { UpdateTaskDto } from './dto/request/update-task.dto.js';
-import { TaskResponseDto } from './dto/response/task.response.dto.js';
+import { TaskResponseDto } from './dto/response/task-response.dto.js';
 
 export class TaskService {
     async create(createTaskDto: CreateTaskDto, userId: string): Promise<TaskResponseDto> {
