@@ -1,4 +1,4 @@
-import bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcryptjs';
 import { prisma } from '../../config/prisma.js';
 import { generateToken } from '../../shared/utils/jwt.util.js';
 
@@ -33,7 +33,7 @@ export class AuthService {
         const token = generateToken({
             userId: user.id,
             email: user.email,
-            role: user.role ||'MANAGER',
+            role: user.role || 'MANAGER',
         });
 
         return { user, token };
