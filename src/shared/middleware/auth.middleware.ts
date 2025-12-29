@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { Role } from '@prisma/client';
 
 declare global {
     namespace Express {
@@ -7,7 +8,7 @@ declare global {
             user?: {
                 id: string;
                 email: string;
-                role: string;
+                role: Role;
             };
         }
     }

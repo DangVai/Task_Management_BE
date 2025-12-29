@@ -2,20 +2,21 @@ import { prisma } from '../../config/prisma.js';
 import { CreateTaskDto } from './dto/request/create-task.dto.js';
 import { UpdateTaskStatusDto } from './dto/request/update-task-status.dto.js';
 import { UpdateTaskDto } from './dto/request/update-task.dto.js';
+import { TaskResponseDto } from './dto/response/task.response.dto.js';
 
 export class TaskService {
-    async create(createTaskDto: CreateTaskDto, userId: string) {
-        return await prisma.task.create({
+    async create(createTaskDto: CreateTaskDto, userId: string): Promise<TaskResponseDto> {
+        const task = await prisma.task.create({
             data: {
                 content: createTaskDto.content,
                 userId: userId,
             },
             include: { user: { select: { id: true, username: true } } }
         });
+        return new TaskResponseDto(task);
     }
 
-    async updateStatus(id: string, updateTaskStatusDto: UpdateTaskStatusDto, userId: string) {
-        // Kiểm tra task tồn tại và thuộc về user
+    async updateStatus(id: string, updateTaskStatusDto: UpdateTaskStatusDto, userId: string): Promise<TaskResponseDto> {
         const task = await prisma.task.findUnique({
             where: { id }
         });
@@ -28,16 +29,17 @@ export class TaskService {
             throw new Error('Unauthorized');
         }
 
-        return await prisma.task.update({
+        const updatedTask = await prisma.task.update({
             where: { id },
             data: {
                 status: updateTaskStatusDto.status,
             },
             include: { user: { select: { id: true, username: true } } }
         });
+        return new TaskResponseDto(updatedTask);
     }
 
-    async update(id: string, updateTaskDto: UpdateTaskDto, userId: string) {
+    async update(id: string, updateTaskDto: UpdateTaskDto, userId: string): Promise<TaskResponseDto> {
         const task = await prisma.task.findUnique({ where: { id } });
 
         if (!task) {
@@ -48,7 +50,7 @@ export class TaskService {
             throw new Error('Unauthorized');
         }
 
-        return await prisma.task.update({
+        const updatedTask = await prisma.task.update({
             where: { id },
             data: {
                 ...(updateTaskDto.content !== undefined && { content: updateTaskDto.content }),
@@ -56,6 +58,7 @@ export class TaskService {
             },
             include: { user: { select: { id: true, username: true } } }
         });
+        return new TaskResponseDto(updatedTask);
     }
 
     async delete(id: string, userId: string) {
