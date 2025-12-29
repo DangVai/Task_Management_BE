@@ -9,14 +9,15 @@
     "moduleResolution": "NodeNext",
     /* Output */
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": ".",
     "sourceMap": true,
     /* Type safety */
     "strict": true,
     "skipLibCheck": true,
     /* Node */
     "types": [
-      "node"
+      "node",
+      "jest"
     ],
     /* Decorators (bắt buộc cho class-validator, Prisma DTO) */
     "experimentalDecorators": true,
