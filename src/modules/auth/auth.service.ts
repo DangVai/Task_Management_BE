@@ -3,7 +3,7 @@ import { prisma } from '../../config/prisma.js';
 import { generateToken } from '../../shared/utils/jwt.util.js';
 
 export class AuthService {
-    static async register(data: {
+    async register(data: {
         email: string;
         username: string;
         password: string;
@@ -33,13 +33,15 @@ export class AuthService {
         const token = generateToken({
             userId: user.id,
             email: user.email,
-            role: user.role || 'MANAGER',
+            role: user.role,
+
         });
 
-        return { user, token };
+        const { password, ...userWithoutPassword } = user;
+        return { user: userWithoutPassword, token };
     }
 
-    static async login(data: { emailOrUsername: string; password: string }) {
+    async login(data: { emailOrUsername: string; password: string }) {
         const user = await prisma.user.findFirst({
             where: {
                 OR: [
@@ -50,7 +52,7 @@ export class AuthService {
         });
 
         if (!user) {
-            throw new Error('User not found');
+            throw new Error('Invalid credentials');
         }
 
         const isPasswordValid = await bcrypt.compare(
@@ -59,7 +61,11 @@ export class AuthService {
         );
 
         if (!isPasswordValid) {
-            throw new Error('Invalid password');
+            throw new Error('Invalid credentials');
+        }
+
+        if (!user.isActive) {
+            throw new Error('User is inactive');
         }
 
         const token = generateToken({
@@ -68,6 +74,8 @@ export class AuthService {
             role: user.role,
         });
 
-        return { user, token };
+        const { password, ...userWithoutPassword } = user;
+
+        return { user: userWithoutPassword, token };
     }
 }
