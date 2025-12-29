@@ -7,6 +7,7 @@ declare global {
             user?: {
                 id: string;
                 email: string;
+                role: string;
             };
         }
     }
@@ -24,6 +25,7 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
         req.user = {
             id: decoded.userId,
             email: decoded.email,
+            role: decoded.role
         };
         next();
     } catch (error) {
