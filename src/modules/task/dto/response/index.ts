@@ -1,1 +1,1 @@
-export * from "./auth-response.dto.js";
+export * from "./task-response.dto.js";
