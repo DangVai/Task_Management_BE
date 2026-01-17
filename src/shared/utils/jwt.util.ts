@@ -1,9 +1,10 @@
 import jwt, { SignOptions } from "jsonwebtoken";
+import { Role } from "@prisma/client";
 
 export interface JwtPayload {
   userId: string;
   email: string;
-  role: string;
+  role: Role;
 }
 
 export const generateToken = (payload: JwtPayload): string => {

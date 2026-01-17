@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { Role } from '@prisma/client';
 
 declare global {
     namespace Express {
@@ -7,6 +8,7 @@ declare global {
             user?: {
                 id: string;
                 email: string;
+                role: Role;
             };
         }
     }
@@ -24,6 +26,7 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
         req.user = {
             id: decoded.userId,
             email: decoded.email,
+            role: decoded.role
         };
         next();
     } catch (error) {
